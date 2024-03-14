@@ -2,6 +2,11 @@ import sys, re
 from PySide6 import QtWidgets
 from draft1ui import Ui_MainWindow
 
+#temp i think
+from gtts import gTTS
+# from io import BytesIO
+# from pygame import mixer as pm, time as pt
+
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -60,8 +65,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def playbtnfunc(self):
         print("playbtn clicked")
         print(self.enteredtxt.toPlainText())
-        wholetxt = self.enteredtxt.toPlainText()
-        temptxt = ""
+        wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
+        t = []
+        print(wholetxt)
+        tospeak = []
+        for i in wholetxt:
+            ele= re.findall(r'\A\*\*repeat\d\>', i)
+            if (len(ele)>0):
+                n = int(ele[0].split("t")[1].replace(">", ""))
+                for x in range(n):
+                    tospeak.append(re.sub(r'\*\*repeat\d\>', "", i))
+            else:
+                elem = re.findall(r'\*\*repeat\d\>', i)
+                if (len(elem)>0):
+                    toadd = i.split("**")
+                    n = int(elem[0].split("t")[1].replace(">", ""))
+                    tospeak.append(toadd[0])
+                    for x in range(n):
+                        tospeak.append(re.sub(r'repeat\d\>', "", toadd[1]))
+                else:
+                    tospeak.append(i)
+        print("plas word", " ".join(tospeak))
+        self.speak(" ".join(tospeak))
+
+
+    def speak(self, txt):
+        tts = gTTS(txt, lang="en")
+        tts.save("temp.mp3")
+
 
     def replaybtnfunc(self):
         print("replay ckciked")
