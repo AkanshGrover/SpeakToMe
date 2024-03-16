@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'draft1ZbBUrB.ui'
+## Form generated from reading UI file 'draft1UYyvJL.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -48,11 +48,6 @@ class Ui_MainWindow(object):
         self.playbtn.setObjectName(u"playbtn")
 
         self.horizontalLayout.addWidget(self.playbtn)
-
-        self.replaybtn = QPushButton(self.centralwidget)
-        self.replaybtn.setObjectName(u"replaybtn")
-
-        self.horizontalLayout.addWidget(self.replaybtn)
 
         self.positionmedia = QSlider(self.centralwidget)
         self.positionmedia.setObjectName(u"positionmedia")
@@ -121,7 +116,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Speak for me", None))
         self.toplabel.setText(QCoreApplication.translate("MainWindow", u"Enter text", None))
         self.playbtn.setText(QCoreApplication.translate("MainWindow", u"Play", None))
-        self.replaybtn.setText(QCoreApplication.translate("MainWindow", u"Replay", None))
         self.clearbtn.setText(QCoreApplication.translate("MainWindow", u"Clear text", None))
         self.rlabel.setText(QCoreApplication.translate("MainWindow", u"Repeat info:", None))
         self.r1label.setText(QCoreApplication.translate("MainWindow", u"Selection to be repeaten:", None))

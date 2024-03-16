@@ -41,13 +41,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="replaybtn">
-          <property name="text">
-           <string>Replay</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QSlider" name="positionmedia">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
