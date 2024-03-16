@@ -1,6 +1,9 @@
-import sys, re
+import sys, re, os
 from PySide6 import QtWidgets
+from PySide6.QtGui import QCloseEvent
 from draft1ui import Ui_MainWindow
+from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtCore import QUrl
 
 #temp i think
 from gtts import gTTS
@@ -21,6 +24,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clearbtn.clicked.connect(self.cleartxtfunc)
         self.playbtn.clicked.connect(self.playbtnfunc)
         self.replaybtn.clicked.connect(self.replaybtnfunc)
+        self.positionmedia.sliderMoved.connect(self.set_audio_pos)
 
         self.temprepeatno = 0
 
@@ -64,35 +68,71 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def playbtnfunc(self):
         print("playbtn clicked")
-        print(self.enteredtxt.toPlainText())
-        wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
-        t = []
-        print(wholetxt)
-        tospeak = []
-        for i in wholetxt:
-            ele= re.findall(r'\A\*\*repeat\d\>', i)
-            if (len(ele)>0):
-                n = int(ele[0].split("t")[1].replace(">", ""))
-                for x in range(n):
-                    tospeak.append(re.sub(r'\*\*repeat\d\>', "", i))
-            else:
-                elem = re.findall(r'\*\*repeat\d\>', i)
-                if (len(elem)>0):
-                    toadd = i.split("**")
-                    n = int(elem[0].split("t")[1].replace(">", ""))
-                    tospeak.append(toadd[0])
+        if (os.path.exists("temp.mp3") == False):
+            print(self.enteredtxt.toPlainText())
+            wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
+            t = []
+            print(wholetxt)
+            tospeak = []
+            for i in wholetxt:
+                ele= re.findall(r'\A\*\*repeat\d\>', i)
+                if (len(ele)>0):
+                    n = int(ele[0].split("t")[1].replace(">", ""))
                     for x in range(n):
-                        tospeak.append(re.sub(r'repeat\d\>', "", toadd[1]))
+                        tospeak.append(re.sub(r'\*\*repeat\d\>', "", i))
                 else:
-                    tospeak.append(i)
-        print("plas word", " ".join(tospeak))
-        self.speak(" ".join(tospeak))
+                    elem = re.findall(r'\*\*repeat\d\>', i)
+                    if (len(elem)>0):
+                        toadd = i.split("**")
+                        n = int(elem[0].split("t")[1].replace(">", ""))
+                        tospeak.append(toadd[0])
+                        for x in range(n):
+                            tospeak.append(re.sub(r'repeat\d\>', "", toadd[1]))
+                    else:
+                        tospeak.append(i)
+            print("plas word", " ".join(tospeak))
+            txt = " ".join(tospeak)
+            tts = gTTS(txt, lang="en")
+            tts.save("temp.mp3")
+            self.playaudio()
+        else:
+            self.playaudio()
 
+    def playaudio(self):
+        self.player = QMediaPlayer()
+        self.audioop = QAudioOutput()
+        self.player.setAudioOutput(self.audioop)
+        self.player.positionChanged.connect(self.slider_pos_changed)
+        self.player.durationChanged.connect(self.duration_changed)
+        self.player.playbackStateChanged.connect(self.playerstatechanged)
+        self.player.errorOccurred.connect(lambda error: print("Error:", error))
+        src = QUrl.fromLocalFile('temp.mp3')
+        if not src.isValid():
+            print("invalid")
+        else:
+            print("this")
+            self.player.setSource(src)
+            self.audioop.setVolume(50)
+            self.player.play()
 
-    def speak(self, txt):
-        tts = gTTS(txt, lang="en")
-        tts.save("temp.mp3")
+    def playerstatechanged(self):
+        print(self.player.isPlaying())
+        if self.player.isPlaying():
+            self.playbtn.setText("Pause")
+        else:
+            self.playbtn.setText("Play")
 
+    def slider_pos_changed(self, position):
+        self.positionmedia.setValue(position)
+
+    def duration_changed(self, duration):
+        self.positionmedia.setRange(0, duration)
+
+    def set_audio_pos(self, position):
+        self.player.setPosition(position)
+
+    def closeEvent(self, event: QCloseEvent):
+        os.remove('temp.mp3')
 
     def replaybtnfunc(self):
         print("replay ckciked")
