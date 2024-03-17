@@ -5,6 +5,7 @@ from draft1ui import Ui_MainWindow
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtCore import QUrl
 from gtts import gTTS
+from pypdf import PdfReader
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -19,6 +20,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clearbtn.clicked.connect(self.cleartxtfunc)
         self.playbtn.clicked.connect(self.playbtnfunc)
         self.positionmedia.sliderMoved.connect(self.set_audio_pos)
+        self.importtxt.clicked.connect(self.importtextfunc)
 
         self.temprepeatno = 0
 
@@ -135,6 +137,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event: QCloseEvent):
         os.remove('temp.mp3')
+
+    def importtextfunc(self):
+        dialog = QtWidgets.QFileDialog(self)
+        dialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        dialog.setNameFilter("Files (*.pdf)")
+        dialog.setViewMode(QtWidgets.QFileDialog.List)
+        if dialog.exec_():
+            file = dialog.selectedFiles()[0]
+            print(file)
+        reader = PdfReader(file)
+        noofpgs = len(reader.pages)
+        importedtxt = ""
+        for i in range(noofpgs):
+            page = reader.pages[i]
+            importedtxt = importedtxt + page.extract_text()
+        print(importedtxt)
+        self.enteredtxt.setText(importedtxt)
 
 
 app = QtWidgets.QApplication(sys.argv)

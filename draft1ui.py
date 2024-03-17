@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'draft1UYyvJL.ui'
+## Form generated from reading UI file 'draft1aflMMs.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -54,6 +54,11 @@ class Ui_MainWindow(object):
         self.positionmedia.setOrientation(Qt.Horizontal)
 
         self.horizontalLayout.addWidget(self.positionmedia)
+
+        self.importtxt = QPushButton(self.centralwidget)
+        self.importtxt.setObjectName(u"importtxt")
+
+        self.horizontalLayout.addWidget(self.importtxt)
 
         self.clearbtn = QPushButton(self.centralwidget)
         self.clearbtn.setObjectName(u"clearbtn")
@@ -116,6 +121,10 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Speak for me", None))
         self.toplabel.setText(QCoreApplication.translate("MainWindow", u"Enter text", None))
         self.playbtn.setText(QCoreApplication.translate("MainWindow", u"Play", None))
+#if QT_CONFIG(tooltip)
+        self.importtxt.setToolTip(QCoreApplication.translate("MainWindow", u"Only PDF files are supported", None))
+#endif // QT_CONFIG(tooltip)
+        self.importtxt.setText(QCoreApplication.translate("MainWindow", u"Import Text", None))
         self.clearbtn.setText(QCoreApplication.translate("MainWindow", u"Clear text", None))
         self.rlabel.setText(QCoreApplication.translate("MainWindow", u"Repeat info:", None))
         self.r1label.setText(QCoreApplication.translate("MainWindow", u"Selection to be repeaten:", None))

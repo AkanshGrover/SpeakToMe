@@ -48,6 +48,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="importtxt">
+          <property name="toolTip">
+           <string>Only PDF files are supported</string>
+          </property>
+          <property name="text">
+           <string>Import Text</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="clearbtn">
           <property name="text">
            <string>Clear text</string>
