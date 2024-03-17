@@ -31,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.player.durationChanged.connect(self.duration_changed)
         self.player.playbackStateChanged.connect(self.playerstatechanged)
         self.player.errorOccurred.connect(lambda error: print("Error:", error))
-        self.src = QUrl.fromLocalFile('temp.mp3')
+        self.src = 'temp.mp3'
         self.audioop.setVolume(50)
 
     def smthselected(self):
@@ -71,6 +71,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def cleartxtfunc(self):
         print("clear clciked")
         self.enteredtxt.clear()
+        if os.path.isfile(self.src):
+            self.delete_file()
 
     def playbtnfunc(self):
         print("playbtn clicked")
@@ -78,11 +80,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.positionmedia.value() == 0:
                 print(self.positionmedia.value(), "values")
                 print(self.enteredtxt.toPlainText())
-                wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
+                self.wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
                 t = []
-                print(wholetxt)
+                print(self.wholetxt)
                 tospeak = []
-                for i in wholetxt:
+                for i in self.wholetxt:
                     ele= re.findall(r'\A\*\*repeat\d\>', i)
                     if (len(ele)>0):
                         n = int(ele[0].split("t")[1].replace(">", ""))
@@ -98,24 +100,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 tospeak.append(re.sub(r'repeat\d\>', "", toadd[1]))
                         else:
                             tospeak.append(i)
-                print("plas word", " ".join(tospeak))
+                print("playing word", " ".join(tospeak))
                 txt = " ".join(tospeak)
                 tts = gTTS(txt, lang="en")
+                if os.path.isfile(self.src):
+                    self.delete_file()
                 tts.save("temp.mp3")
                 self.playaudio()
                 self.playbtn.setText("Pause")
             else:
-                self.player.play()
-                self.playbtn.setText("Pause")
+                if self.enteredtxt.toPlainText().split("<repeat**") == self.wholetxt:
+                    self.player.play()
+                    self.playbtn.setText("Pause")
+                else:
+                    self.positionmedia.setValue(0)
+                    self.playbtnfunc()
         else:
             self.player.pause()
             self.playbtn.setText("Play")
 
     def playaudio(self):
-        if not self.src.isValid():
+        if not os.path.isfile(self.src):
             print("invalid")
         else:
-            print("this")
+            print("playing")
             self.player.setSource(self.src)
             self.player.play()
 
@@ -135,25 +143,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_audio_pos(self, position):
         self.player.setPosition(position)
 
+    def delete_file(self):
+        self.player.setSource(QUrl(None))
+        os.remove("temp.mp3")
+
     def closeEvent(self, event: QCloseEvent):
-        os.remove('temp.mp3')
+        if os.path.isfile(self.src):
+            self.delete_file()
 
     def importtextfunc(self):
         dialog = QtWidgets.QFileDialog(self)
         dialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
         dialog.setNameFilter("Files (*.pdf)")
         dialog.setViewMode(QtWidgets.QFileDialog.List)
+        file = ""
         if dialog.exec_():
             file = dialog.selectedFiles()[0]
             print(file)
-        reader = PdfReader(file)
-        noofpgs = len(reader.pages)
-        importedtxt = ""
-        for i in range(noofpgs):
-            page = reader.pages[i]
-            importedtxt = importedtxt + page.extract_text()
-        print(importedtxt)
-        self.enteredtxt.setText(importedtxt)
+        if file!="":
+            reader = PdfReader(file)
+            noofpgs = len(reader.pages)
+            importedtxt = ""
+            for i in range(noofpgs):
+                page = reader.pages[i]
+                importedtxt = importedtxt + page.extract_text()
+            print(importedtxt)
+            self.enteredtxt.setText(importedtxt)
 
 
 app = QtWidgets.QApplication(sys.argv)
