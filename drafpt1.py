@@ -31,7 +31,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.player.durationChanged.connect(self.duration_changed)
         self.player.playbackStateChanged.connect(self.playerstatechanged)
         self.player.errorOccurred.connect(lambda error: print("Error:", error))
-        self.src = 'temp.mp3'
+        if sys.platform == "win32":
+            path = os.path.expanduser('~').replace("\\", r"\\") + r"\\" + "Documents" + r"\\" + "STM" + r"\\" 
+            print(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            self.src = path + "temp.mp3"
+            print(self.src)
         self.audioop.setVolume(50)
 
     def smthselected(self):
@@ -105,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 tts = gTTS(txt, lang="en")
                 if os.path.isfile(self.src):
                     self.delete_file()
-                tts.save("temp.mp3")
+                tts.save(self.src)
                 self.playaudio()
                 self.playbtn.setText("Pause")
             else:
@@ -124,7 +130,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             print("invalid")
         else:
             print("playing")
-            self.player.setSource(self.src)
+            self.player.setSource(QUrl.fromLocalFile(self.src))
             self.player.play()
 
     def playerstatechanged(self):
@@ -145,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def delete_file(self):
         self.player.setSource(QUrl(None))
-        os.remove("temp.mp3")
+        os.remove(self.src)
 
     def closeEvent(self, event: QCloseEvent):
         if os.path.isfile(self.src):
@@ -178,7 +184,6 @@ window = MainWindow()
 window.show()
 app.exec()
 
-#removed file logic for now fix it afterwards
 #value of spinbox doesnt update when a simple text is chosen
 #make an icon
 #etc

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'draft1aflMMs.ui'
+## Form generated from reading UI file 'draft1ymbbjM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Speak for me", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Speak to me", None))
         self.toplabel.setText(QCoreApplication.translate("MainWindow", u"Enter text", None))
         self.playbtn.setText(QCoreApplication.translate("MainWindow", u"Play", None))
 #if QT_CONFIG(tooltip)
