@@ -1,10 +1,9 @@
-import sys, re, os
+import sys, re, os, pyttsx3
 from PySide6 import QtWidgets
 from PySide6.QtGui import QCloseEvent
 from draft1ui import Ui_MainWindow
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtCore import QUrl
-from gtts import gTTS
 from pypdf import PdfReader
 
 
@@ -21,6 +20,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playbtn.clicked.connect(self.playbtnfunc)
         self.positionmedia.sliderMoved.connect(self.set_audio_pos)
         self.importtxt.clicked.connect(self.importtextfunc)
+
+        self.engine = pyttsx3.init()
+        self.voicegendercombobox.addItems(["0", "1"])
+        self.voiceratespinbox.setValue(self.engine.getProperty('rate'))
+        self.applyvoicebtn.clicked.connect(self.applyvoicefunc)
+        self.resetvoicebtn.clicked.connect(self.resetvoicefunc)
 
         self.temprepeatno = 0
 
@@ -39,6 +44,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.src = path + "temp.mp3"
             print(self.src)
         self.audioop.setVolume(50)
+
+    def applyvoicefunc(self):
+        self.engine.setProperty('rate', self.voiceratespinbox.value())
+        self.engine.setProperty('voice', self.engine.getProperty('voices')[int(self.voicegendercombobox.currentText())].id)
+        if os.path.isfile(self.src):
+            self.delete_file()
+
+    def resetvoicefunc(self):
+        self.voicegendercombobox.setCurrentIndex(0)
+        self.voiceratespinbox.setValue(200)
+        self.engine.setProperty('rate', 200)
+        self.engine.setProperty('voice', self.engine.getProperty('voices')[0].id)
+        if os.path.isfile(self.src):
+            self.delete_file()
 
     def smthselected(self):
         a=self.enteredtxt.textCursor().selectedText().split("**")
@@ -108,10 +127,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             tospeak.append(i)
                 print("playing word", " ".join(tospeak))
                 txt = " ".join(tospeak)
-                tts = gTTS(txt, lang="en")
                 if os.path.isfile(self.src):
                     self.delete_file()
-                tts.save(self.src)
+                self.engine.save_to_file(txt, self.src)
+                self.engine.runAndWait()
+                self.engine.stop()
                 self.playaudio()
                 self.playbtn.setText("Pause")
             else:
@@ -183,7 +203,3 @@ app.setStyle("Fusion")
 window = MainWindow()
 window.show()
 app.exec()
-
-#value of spinbox doesnt update when a simple text is chosen
-#make an icon
-#etc

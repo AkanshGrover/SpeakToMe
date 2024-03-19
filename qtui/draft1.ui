@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QLabel" name="toplabel">
         <property name="text">
@@ -69,9 +69,9 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <spacer name="verticalSpacer_2">
+       <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -87,43 +87,50 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="rlabel">
-        <property name="text">
-         <string>Repeat info:</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="rlabel">
+          <property name="text">
+           <string>Repeat info:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="r1label">
+          <property name="text">
+           <string>Selection to be repeaten:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="repeatnobox"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="savebtn">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="resetbtn">
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QLabel" name="r1label">
-        <property name="text">
-         <string>Selection to be repeaten:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="repeatnobox"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="resetbtn">
-        <property name="text">
-         <string>Reset</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="savebtn">
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
+       <spacer name="verticalSpacer_3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Minimum</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -132,6 +139,75 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="voiceinfolabel">
+          <property name="text">
+           <string>Voice info:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="vlabel1">
+            <property name="text">
+             <string>Voice type:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="voicegendercombobox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="vlabel2">
+            <property name="text">
+             <string>Voice rate:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="voiceratespinbox">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="singleStep">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="applyvoicebtn">
+          <property name="text">
+           <string>Apply</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="resetvoicebtn">
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
