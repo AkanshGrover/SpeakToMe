@@ -1,7 +1,7 @@
 import sys, re, os, pyttsx3
 from PySide6 import QtWidgets
 from PySide6.QtGui import QCloseEvent
-from draft1ui import Ui_MainWindow
+from mainui import Ui_MainWindow
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtCore import QUrl
 from pypdf import PdfReader
@@ -37,12 +37,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.player.playbackStateChanged.connect(self.playerstatechanged)
         self.player.errorOccurred.connect(lambda error: print("Error:", error))
         if sys.platform == "win32":
-            path = os.path.expanduser('~').replace("\\", r"\\") + r"\\" + "Documents" + r"\\" + "STM" + r"\\" 
-            print(path)
+            path = os.path.expanduser('~').replace("\\", r"\\") + r"\\" + "Documents" + r"\\" + "STM" + r"\\"
             if not os.path.exists(path):
                 os.mkdir(path)
             self.src = path + "temp.mp3"
-            print(self.src)
         self.audioop.setVolume(50)
 
     def applyvoicefunc(self):
@@ -61,26 +59,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def smthselected(self):
         a=self.enteredtxt.textCursor().selectedText().split("**")
-        print("here", a)
         if (len(a) > 1):
             a = a[1].split(">")[0].split("t")[1]
-            print("heree again",a)
             self.repeatnobox.setValue(int(a))
 
     
     def repeatnofunc(self):
         self.temprepeatno = self.repeatnobox.value()
-        print(self.temprepeatno)
 
 
     def savebtnfunc(self):
-        print("savebtn clicked")
         a=self.enteredtxt.textCursor().selectedText()
         self.enteredtxt.textCursor().removeSelectedText()
         check = re.split(r'\*\*repeat\d\>', a)
-        print("checc",check)
         if (check[0] != ""):
-            print(self.temprepeatno)
             self.enteredtxt.textCursor().insertText(f"**repeat{self.temprepeatno}>{a}<repeat**")
         else:
             self.enteredtxt.textCursor().insertText(f"**repeat{self.temprepeatno}>{check[1].split("<repeat**")[0]}<repeat**")
@@ -88,26 +80,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def resetbtnfunc(self):
         a = self.enteredtxt.textCursor().selectedText()
         b = re.split(r'\*\*repeat\d\>', a)[1].split("<repeat**")[0]
-        print(b)
         self.enteredtxt.textCursor().removeSelectedText()
         self.enteredtxt.textCursor().insertText(b)
         self.repeatnobox.setValue(0)
 
     def cleartxtfunc(self):
-        print("clear clciked")
         self.enteredtxt.clear()
         if os.path.isfile(self.src):
             self.delete_file()
 
     def playbtnfunc(self):
-        print("playbtn clicked")
         if self.playbtn.text() == "Play":
             if self.positionmedia.value() == 0:
-                print(self.positionmedia.value(), "values")
-                print(self.enteredtxt.toPlainText())
                 self.wholetxt = self.enteredtxt.toPlainText().split("<repeat**")
                 t = []
-                print(self.wholetxt)
                 tospeak = []
                 for i in self.wholetxt:
                     ele= re.findall(r'\A\*\*repeat\d\>', i)
@@ -125,7 +111,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 tospeak.append(re.sub(r'repeat\d\>', "", toadd[1]))
                         else:
                             tospeak.append(i)
-                print("playing word", " ".join(tospeak))
                 txt = " ".join(tospeak)
                 if os.path.isfile(self.src):
                     self.delete_file()
@@ -147,14 +132,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def playaudio(self):
         if not os.path.isfile(self.src):
-            print("invalid")
+            print("error") #make an error window pop up here
         else:
-            print("playing")
             self.player.setSource(QUrl.fromLocalFile(self.src))
             self.player.play()
 
     def playerstatechanged(self):
-        print(self.player.isPlaying())
         if self.player.isPlaying():
             self.playbtn.setText("Pause")
         else:
@@ -185,7 +168,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         file = ""
         if dialog.exec_():
             file = dialog.selectedFiles()[0]
-            print(file)
         if file!="":
             reader = PdfReader(file)
             noofpgs = len(reader.pages)
@@ -193,7 +175,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for i in range(noofpgs):
                 page = reader.pages[i]
                 importedtxt = importedtxt + page.extract_text()
-            print(importedtxt)
             self.enteredtxt.setText(importedtxt)
 
 
