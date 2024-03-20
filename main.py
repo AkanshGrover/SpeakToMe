@@ -177,10 +177,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 importedtxt = importedtxt + page.extract_text()
             self.enteredtxt.setText(importedtxt)
 
-
-app = QtWidgets.QApplication(sys.argv)
-app.setStyle("Fusion")
-
-window = MainWindow()
-window.show()
-app.exec()
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("Fusion")
+    window = MainWindow()
+    window.show()
+    app.exec()
